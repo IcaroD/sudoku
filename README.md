@@ -26,11 +26,11 @@ Bem-vindo ao Sudoku Game! Este projeto é um jogo de Sudoku interativo desenvolv
 
 1. **Clone o repositório:**
     ```bash
-    git clone https://github.com/seu-usuario/sudoku-game.git
+    git clone https://github.com/seu-usuario/sudoku.git
     ```
 2. **Navegue até o diretório do projeto:**
     ```bash
-    cd sudoku-game
+    cd sudoku
     ```
 3. **Instale as dependências necessárias:**
     ```bash
