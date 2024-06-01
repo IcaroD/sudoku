@@ -1,74 +1,98 @@
 from tkinter import *
-from regras import verificar, nivel
+from regras import Regras
 
-#popup
-#win = Tk()
+# popup
+# win = Tk()
 
-#win.geometry("50x50")
+# win.geometry("50x50")
 
-#def open_popup():
-   #top= Toplevel(win)
-   #top.geometry("750x250")
-   #top.title("Vitória")
-   #Label(top, text= "Você ganhou!", font=('Mistral 18 bold')).place(x=25,y=25)
+# def open_popup():
+# top= Toplevel(win)
+# top.geometry("750x250")
+# top.title("Vitória")
+# Label(top, text= "Você ganhou!", font=('Mistral 18 bold')).place(x=25,y=25)
 
-#win.loop()
+# win.loop()
 
-#Cria o tabuleiro
+# Cria o tabuleiro
 
 celulas = {}
+regra = Regras()
 
-def facil(): #facil com 70 elementos
+
+def facil():  # facil com 70 elementos
     errLabel.configure(text="")
     num = 10
     dificuldade(num)
 
-def medio(): #medio com 60 elementos
+
+def medio():  # medio com 60 elementos
     errLabel.configure(text="")
     num = 20
     dificuldade(num)
 
-def dificil(): #facil com 40 elementos
+
+def dificil():  # facil com 40 elementos
     errLabel.configure(text="")
     num = 50
     dificuldade(num)
 
-def dificuldade(total): #põe a dificuldade
-    board = nivel(total)
+
+def dificuldade(total):  # põe a dificuldade
+    board = regra.nivel(total)
     for linha in range(2, 11):
         for col in range(1, 10):
             celulas[(linha, col)].delete(0, "end")
-            celulas[(linha, col)].insert(0, board[linha-2][col-1])
+            celulas[(linha, col)].insert(0, board[linha - 2][col - 1])
 
-def num_digitado(P): #Vê se, o que foi digitado é um número 
-        ilegal = (P.isdigit() or P == "") and len(P) < 2
-        return ilegal
 
-def draw3x3Grid(row, column, bgcolor): #faz uma tabela de 3x3
+def num_digitado(P):  # Vê se, o que foi digitado é um número
+    ilegal = (P.isdigit() or P == "" or P == "0") and len(P) < 2
+    return ilegal
+
+
+def draw3x3Grid(row, column, bgcolor):  # faz uma tabela de 3x3
     for i in range(3):
         for j in range(3):
-            e = Entry(root, width=5, bg=bgcolor, justify="center", validate="key", validatecommand=(reg, "%P"))
-            e.grid(row=row+i+1, column=column+j+1, sticky="nsew", padx=1, pady=1, ipady=5)
-            celulas[(row+i+1, column+j+1)] = e
+            e = Entry(
+                root,
+                width=5,
+                bg=bgcolor,
+                justify="center",
+                validate="key",
+                validatecommand=(reg, "%P"),
+            )
+            e.grid(
+                row=row + i + 1,
+                column=column + j + 1,
+                sticky="nsew",
+                padx=1,
+                pady=1,
+                ipady=5,
+            )
+            celulas[(row + i + 1, column + j + 1)] = e
 
-def draw9x9Grid(): #Junta as tabelas de 3x3
+
+def draw9x9Grid():  # Junta as tabelas de 3x3
     color = "#FFFFFF"
     for tabelas_linha in range(1, 10, 3):
         for tabela_coluna in range(0, 9, 3):
             draw3x3Grid(tabelas_linha, tabela_coluna, color)
             if color == "#FFFFFF":
-                color="#D0ffff"
+                color = "#D0ffff"
             else:
                 color = "#FFFFFF"
 
-def reset(): #renicia a tabela
+
+def reset():  # renicia a tabela
     errLabel.configure(text="")
     for linha in range(2, 11):
         for col in range(1, 10):
             celula = celulas[(linha, col)]
             celula.delete(0, "end")
 
-def getValues(): # Pega os valores e transforma em inteiros
+
+def getValues():  # Pega os valores e transforma em inteiros
     board = []
     for linha in range(2, 11):
         linhas = []
@@ -81,17 +105,22 @@ def getValues(): # Pega os valores e transforma em inteiros
         board.append(linhas)
     return board
 
-def teste(): # Verifica, se venceu
+
+def valida_resultado():  # Verifica, se venceu
     errLabel.configure(text="")
     tabela = getValues()
     for linha in range(0, 9):
-        for col in range(0, 9):
-            if tabela[linha][col] == 0 or verificar(tabela, linha, col-1, tabela[linha, col]) != True:
-                errLabel.configure(text="Tente novamente!")
+        for coluna in range(0, 9):
+            if tabela[linha][coluna] == 0:  # valida preenchimento
+                print(tabela[linha][coluna])
+                errLabel.configure(text=f"A celula {(linha,coluna)} esta vazia")
                 return None
-    #open_popup()
-                
-    
+            elif not regra.verificar(tabela, linha, coluna, tabela[linha][coluna]):
+                errLabel.configure(text=f"Erro encontrado na linha {linha} e coluna {coluna}")
+                return None
+    errLabel.configure(text="Parabéns Resolvido!")
+    # open_popup()
+
 
 root = Tk()
 root.title("Sudoku")
@@ -100,22 +129,25 @@ root.geometry("324x550")
 errLabel = Label(root, text="", fg="red")
 errLabel.grid(row=15, column=1, columnspan=10, pady=5)
 
-reg = root.register(num_digitado) #registra o numero
+reg = root.register(num_digitado)  # registra o numero
 
-btn_solved = Button(root, command=teste, text="Resolvido?", width=10)
-btn_solved.grid(row=20, column=1, columnspan= 5, pady=20)
+btn_solved = Button(root, command=valida_resultado, text="Resolvido?", width=10)
+btn_solved.grid(row=20, column=1, columnspan=5, pady=20)
 
 btn_reset = Button(root, command=reset, text="Reset", width=10)
-btn_reset.grid(row=20, column=5, columnspan= 5, pady=20)
+btn_reset.grid(row=20, column=5, columnspan=5, pady=20)
 
 facil = Button(root, command=facil, text="Fácil", width=10)
-facil.grid(row=21, column=3, columnspan= 5, pady=1)
+facil.grid(row=21, column=3, columnspan=5, pady=1)
 
 medio = Button(root, command=medio, text="Médio", width=10)
-medio.grid(row=22, column=3, columnspan= 5, pady=1)
+medio.grid(row=22, column=3, columnspan=5, pady=1)
 
 dificil = Button(root, command=dificil, text="Difícil", width=10)
-dificil.grid(row=23, column=3, columnspan= 5, pady=1)
+dificil.grid(row=23, column=3, columnspan=5, pady=1)
+
+exit_button = Button(root, text="Exit", command=root.destroy, width=10)
+exit_button.grid(row=25, column=3, columnspan=5, pady=7)
 
 draw9x9Grid()
 root.mainloop()
