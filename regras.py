@@ -12,8 +12,9 @@ class Regras:
 
         for i in range((x // 3) * 3, (x // 3) * 3 + 3):
             for j in range((y // 3) * 3, (y // 3) * 3 + 3):
-                if tabuleiro[i][j] == num:
-                    return False
+                if i != x and j != y:
+                    if tabuleiro[i][j] == num:
+                        return False
 
         return True
 

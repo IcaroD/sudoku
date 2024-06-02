@@ -2,19 +2,11 @@ from tkinter import *
 from regras import Regras
 
 # popup
-# win = Tk()
-
-# win.geometry("50x50")
-
-# def open_popup():
-# top= Toplevel(win)
-# top.geometry("750x250")
-# top.title("Vitória")
-# Label(top, text= "Você ganhou!", font=('Mistral 18 bold')).place(x=25,y=25)
-
-# win.loop()
-
-# Cria o tabuleiro
+def open_popup():
+    top= Toplevel(root)
+    top.geometry("400x250")
+    top.title("Vitória")
+    Label(top, text= "Você ganhou!", font=('Arial 20')).place(x=100,y=90)
 
 celulas = {}
 regra = Regras()
@@ -109,13 +101,13 @@ def getValues():  # Pega os valores e transforma em inteiros
 def valida_resultado():  # Verifica, se venceu
     errLabel.configure(text="")
     tabela = getValues()
+    open_popup()
     for linha in range(0, 9):
         for coluna in range(0, 9):
             if tabela[linha][coluna] == 0:  # valida preenchimento
-                print(tabela[linha][coluna])
                 errLabel.configure(text=f"A celula {(linha,coluna)} esta vazia")
                 return None
-            elif not regra.verificar(tabela, linha, coluna, tabela[linha][coluna]):
+            elif regra.verificar(tabela, linha, coluna, tabela[linha][coluna]) == False:
                 errLabel.configure(text=f"Erro encontrado na linha {linha} e coluna {coluna}")
                 return None
     errLabel.configure(text="Parabéns Resolvido!")
