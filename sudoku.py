@@ -39,7 +39,7 @@ def dificuldade(total):  # põe a dificuldade
 
 
 def num_digitado(P):  # Vê se, o que foi digitado é um número
-    ilegal = (P.isdigit() or P == "" or P == "0") and len(P) < 2
+    ilegal = (P.isdigit() or P == "") and len(P) < 2
     return ilegal
 
 
@@ -97,21 +97,72 @@ def getValues():  # Pega os valores e transforma em inteiros
         board.append(linhas)
     return board
 
+def valida_preenchimento(tabela):
+    for linha in range(9):
+        for coluna in range(9):
+            if tabela[linha][coluna] == 0:  # valida preenchimento
+                errLabel.configure(text=f"A celula {(linha+1,coluna+1)} está vazia, continue!")
+                return False
+    return True
 
-def valida_resultado():  # Verifica, se venceu
+def valida_linha(tabela):
+    for i in range(9):
+        for j in range(9):
+            num = tabela[j][i]
+            for k in range(9):
+                if tabela[j][k] == num and k != i:
+                    errLabel.configure(text=f"Error na linha {j+1}")
+                    return False
+    return True
+
+def valida_coluna(tabela):
+    for i in range(9):
+        for j in range(9):
+            num = tabela[i][j]
+            for k in range(1, 9):
+                if tabela[k][j] == num and k != i:
+                    errLabel.configure(text=f"Error na coluna {j+1}")
+                    return False
+    return True
+            
+def valida_3x3(tabela):
+    for x in range(9):
+        for y in range(9):
+            num = tabela[x][y]
+            for i in range((x // 3) * 3, (x // 3) * 3 + 3):
+                for j in range((y // 3) * 3, (y // 3) * 3 + 3):
+                    if i != x and j != y:
+                        if tabela[i][j] == num:
+                            errLabel.configure(text=f"{num} aparece pelo menos 2 vezes, na célula {x+1,y+1} e {i+1,j+1}")
+                            return False
+    return True
+
+def valida_jogo():  # Verifica, se venceu
     errLabel.configure(text="")
     tabela = getValues()
-    open_popup()
-    for linha in range(0, 9):
-        for coluna in range(0, 9):
-            if tabela[linha][coluna] == 0:  # valida preenchimento
-                errLabel.configure(text=f"A celula {(linha,coluna)} esta vazia")
-                return None
-            elif regra.verificar(tabela, linha, coluna, tabela[linha][coluna]) == False:
-                errLabel.configure(text=f"Erro encontrado na linha {linha} e coluna {coluna}")
-                return None
-    errLabel.configure(text="Parabéns Resolvido!")
-    # open_popup()
+    ok = False
+    if valida_preenchimento(tabela): 
+        ok = True
+    else:
+        ok = False
+        return None
+    if valida_linha(tabela): 
+        ok = True
+    else:
+        ok = False
+        return None
+    if valida_coluna(tabela): 
+        ok = True
+    else:
+        ok = False
+        return None
+    if valida_3x3(tabela):
+        ok = True
+    else:
+        ok = False
+        return None
+    if ok:
+        open_popup()
 
 
 root = Tk()
@@ -123,7 +174,7 @@ errLabel.grid(row=15, column=1, columnspan=10, pady=5)
 
 reg = root.register(num_digitado)  # registra o numero
 
-btn_solved = Button(root, command=valida_resultado, text="Resolvido?", width=10)
+btn_solved = Button(root, command=valida_jogo, text="Resolvido?", width=10)
 btn_solved.grid(row=20, column=1, columnspan=5, pady=20)
 
 btn_reset = Button(root, command=reset, text="Reset", width=10)

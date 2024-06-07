@@ -2,7 +2,7 @@ import random
 
 
 class Regras:
-    def __init__(self) -> None:
+    def __init__(self):
         self.board = [[0 for i in range(9)] for j in range(9)]
 
     def verificar(self, tabuleiro, x, y, num):  # Verifica se atende todas as regras
