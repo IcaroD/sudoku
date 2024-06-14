@@ -101,7 +101,7 @@ def valida_preenchimento(tabela):
     for linha in range(9):
         for coluna in range(9):
             if tabela[linha][coluna] == 0:  # valida preenchimento
-                errLabel.configure(text=f"A celula {(linha+1,coluna+1)} está vazia, continue!")
+                errLabel.configure(text=f"Preencha a celula {(linha+1,coluna+1)}, continue!")
                 return False
     return True
 
